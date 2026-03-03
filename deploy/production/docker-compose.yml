@@ -38,13 +38,13 @@ services:
       dockerfile: Dockerfile
       context: ../../server
     environment:
-      DB_HOST: database
+      DB_HOST: localhost
       DB_PORT: 5432
       DB_NAME: openmu
       DB_USERNAME: postgres
       DB_PASSWORD: admin
       ADMIN_PANEL_HOST: openmu-startup
-      ADMIN_PANEL_PORT: 8085
+      ADMIN_PANEL_PORT: 81
       ADMIN_PANEL_USERNAME: admin
       ADMIN_PANEL_PASSWORD: openmu
     restart: "unless-stopped"
