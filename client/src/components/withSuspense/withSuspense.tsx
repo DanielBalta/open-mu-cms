@@ -8,7 +8,7 @@ const withSuspense = <P extends object>(WrappedComponent: ComponentType<P>) => {
         <WrappedComponent {...props} />
       </Suspense>
     );
-  }
+  };
 
   return ComponentWithSuspense;
 };
