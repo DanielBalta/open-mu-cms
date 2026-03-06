@@ -8,12 +8,10 @@ services:
     volumes:
       - ./nginx.prod80.conf:/etc/nginx/nginx.conf:ro
       - ./certbot/www:/var/www/certbot/:ro
+    networks:
+      - default
+      - database_network
 
-# We add another nginx here, just for HTTPs.
-# The reason is, that it's not starting when we combine port 80 and 443 until
-# the certificates are created.
-# So, when running the certbot the first time, we need to be able to access
-# the port 80 - and we solve this by separating the server configs.
   nginx-443:
     container_name: nginx-web-443
     build:
@@ -25,12 +23,18 @@ services:
       - ./nginx.prod443.conf:/etc/nginx/nginx.conf:ro
       - ./.htpasswd:/etc/nginx/.htpasswd
       - ./certbot/conf/:/etc/nginx/ssl/:ro
+    networks:
+      - default
+      - database_network
 
   certbot:
     image: certbot/certbot:latest
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - default
+      - database_network
 
   cms-api:
     container_name: cms-api
@@ -50,3 +54,12 @@ services:
     restart: "unless-stopped"
     ports:
       - "8085"
+    networks:
+      - default
+      - database_network
+
+networks:
+  default:
+  database_network:
+    name: all-in-one_default
+    external: true
