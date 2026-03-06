@@ -18,7 +18,7 @@ public class AppConfig implements CommandLineRunner {
     private Environment env;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         logger.info("=================================================================================================");
         logger.info("Application Configuration:");
         logger.info("Active Profiles: {}", Arrays.toString(env.getActiveProfiles()));
