@@ -48,7 +48,7 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: admin
       ADMIN_PANEL_HOST: nginx-80
-      ADMIN_PANEL_PORT: 81
+      ADMIN_PANEL_PORT: 80
       ADMIN_PANEL_USERNAME: admin
       ADMIN_PANEL_PASSWORD: openmu
     restart: "unless-stopped"
