@@ -53,7 +53,7 @@ services:
       ADMIN_PANEL_PASSWORD: openmu
     restart: "unless-stopped"
     ports:
-      - "8085"
+      - "8085:8085"
     networks:
       - default
       - database_network
