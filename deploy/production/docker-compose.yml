@@ -37,8 +37,10 @@ services:
     build:
       dockerfile: Dockerfile
       context: ../../server
+    extra_hosts:
+      - "localhost:host-gateway"
     environment:
-      DB_HOST: host.docker.internal
+      DB_HOST: localhost
       DB_PORT: 5432
       DB_NAME: openmu
       DB_USERNAME: postgres
