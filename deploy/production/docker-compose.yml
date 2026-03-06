@@ -37,13 +37,14 @@ services:
     build:
       dockerfile: Dockerfile
       context: ../../server
+    network_mode: "host"
     environment:
-      DB_HOST: 192.168.1.200
+      DB_HOST: 127.0.0.1
       DB_PORT: 5432
       DB_NAME: openmu
       DB_USERNAME: postgres
       DB_PASSWORD: admin
-      ADMIN_PANEL_HOST: 192.168.1.200
+      ADMIN_PANEL_HOST: 127.0.0.1
       ADMIN_PANEL_PORT: 81
       ADMIN_PANEL_USERNAME: admin
       ADMIN_PANEL_PASSWORD: openmu
