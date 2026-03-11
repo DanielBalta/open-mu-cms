@@ -27,7 +27,8 @@ public interface CharacterRepository extends JpaRepository<Character, UUID> {
         LEFT JOIN c.statAttributes r ON r.attributeDefinition.id = :resetAttributeId
         LEFT JOIN c.statAttributes m ON m.attributeDefinition.id = :masterLevelAttributeId
         LEFT JOIN c.statAttributes l ON l.attributeDefinition.id = :levelAttributeId
-        WHERE :filterClasses IS NULL OR c.characterClass.name IN :filterClasses
+        WHERE (:filterClasses IS NULL OR c.characterClass.name IN :filterClasses)
+        AND c.characterStatus <> 32
         ORDER BY resets DESC, level_value DESC
     """)
     Page<CharacterRankDTO> findCharactersRanked(@Param("resetAttributeId") UUID resetAttributeId,

@@ -55,7 +55,7 @@ const primary = {
 };
 
 export const colors = {
-  primary: primary,
+  primary: green,
   background: {
     DEFAULT: '#ffffff',
     dark: '#0000ff',

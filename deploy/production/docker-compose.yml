@@ -1,7 +1,7 @@
 services:
   nginx-80:
     image: nginx:alpine
-    container_name: nginx-web-80
+    container_name: web-80
     ports:
       - "80:80"
     restart: "unless-stopped"
@@ -13,12 +13,13 @@ services:
       - database_network
 
   nginx-443:
-    container_name: nginx-web-443
+    container_name: web-443
     build:
       dockerfile: Dockerfile
       context: ../../client
     ports:
       - "443:443"
+    restart: "unless-stopped"
     volumes:
       - ./nginx.prod443.conf:/etc/nginx/nginx.conf:ro
       - ./.htpasswd:/etc/nginx/.htpasswd
