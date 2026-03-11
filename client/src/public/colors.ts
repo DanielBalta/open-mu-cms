@@ -40,7 +40,7 @@ export const pink = {
   '950': '#50072b',
 };
 
-const primary = {
+export const primary = {
   50: '#F4F2FF',
   100: '#EBE7FF',
   200: '#D9D2FF',
