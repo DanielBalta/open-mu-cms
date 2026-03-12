@@ -94,8 +94,9 @@ public class GameServerService {
 
     public OnlinePlayersDTO getOnlinePlayers() throws BadGatewayException {
         RestTemplate restTemplate = new RestTemplate();
+        String url = SystemConstants.ADMIN_PANEL_URL + SystemConstants.ONLINE_PLAYERS_ENDPOINT;
         ResponseEntity<String> response = restTemplate.exchange(
-                SystemConstants.ADMIN_PANEL_URL + SystemConstants.ONLINE_PLAYERS_ENDPOINT,
+                url,
                 HttpMethod.GET,
                 adminApiClient,
                 String.class);
@@ -111,7 +112,7 @@ public class GameServerService {
             return new Gson().fromJson(body, OnlinePlayersDTO.class);
         } catch (JsonSyntaxException e) {
             // Aquí manejas si el body no era un JSON válido
-            log.error("Error de formato en la respuesta: {}", response.getBody(), e);
+            log.error("Error de formato en la respuesta: {}, url: {}, headers: {}", response.getBody(), url, adminApiClient, e);
             return new OnlinePlayersDTO();
         }
     }

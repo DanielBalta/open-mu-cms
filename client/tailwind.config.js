@@ -60,7 +60,7 @@ export default {
       typography: ({ theme }) => ({
         primary: {
           css: {
-            '--tw-prose-body': theme('colors.primary[950]'),
+            '--tw-prose-body': theme('colors.primary[100]'),
             '--tw-prose-headings': theme('colors.primary[950]'),
             '--tw-prose-lead': theme('colors.primary[700]'),
             '--tw-prose-links': theme('colors.primary[500]'),
