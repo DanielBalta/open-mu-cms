@@ -1,4 +1,4 @@
-import { colors } from './src/public/colors';
+import { colors } from '@/public/colors';
 
 export default {
   content: ['index.html', './src/**/*.{js,jsx,ts,tsx,vue,html}'],
