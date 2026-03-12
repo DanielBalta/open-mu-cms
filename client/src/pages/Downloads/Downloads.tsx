@@ -7,8 +7,8 @@ import Typography from '@/components/Typography/Typography';
 import ImageButton from '@/components/ImageButton/ImageButton';
 import Table, { Column } from '@/components/Table/Table';
 
-import DriveLogo from '@/assets/images/logos/drive.svg';
 import MegaLogo from '@/assets/images/logos/mega.svg';
+import MediafireLogo from '@/assets/images/logos/mediafire.svg';
 import DirectXLogo from '../../assets/images/logos/directx.svg';
 import VisualCppLogo from '@/assets/images/logos/visual-cpp.svg';
 import DotNetLogo from '@/assets/images/logos/dotnet-framework.svg';
@@ -90,10 +90,10 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
             {t('clientSize')} <br /> {t('fileFormat')}
           </Typography>
           <div className="flex flex-wrap gap-8">
-            <ImageButton link="https://drive.google.com/drive">
-              <DriveLogo />
+            <ImageButton link="https://www.mediafire.com/file/0ab1uh4ibacbhyo/MuMichi.rar/file">
+              <MediafireLogo />
             </ImageButton>
-            <ImageButton link="https://mega.nz">
+            <ImageButton link="https://mega.nz/file/yChg0KyK#xBROYk9EdnkjkFEi8Bz3OS2lcd16xt0s1cwSpc21Yr4">
               <MegaLogo />
             </ImageButton>
           </div>
@@ -107,25 +107,25 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
           </Typography>
           <div className="flex flex-wrap gap-8">
             <ImageButton
-              link="https://www.microsoft.com/pt-br/download/details.aspx?id=35"
+              link="https://www.microsoft.com/en-us/download/details.aspx?id=35"
               size="medium"
             >
               <DirectXLogo className="h-20 w-36" />
             </ImageButton>
             <ImageButton
-              link="https://learn.microsoft.com/pt-br/cpp/windows/latest-supported-vc-redist?view=msvc-170"
+              link="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170"
               size="medium"
             >
               <VisualCppLogo className="w-24 rounded-full" />
             </ImageButton>
             <ImageButton
-              link="https://www.microsoft.com/pt-br/download/details.aspx?id=30653"
+              link="https://www.microsoft.com/en-us/download/details.aspx?id=30653"
               size="medium"
             >
               <DotNetLogo className="max-h-20 w-20" />
             </ImageButton>
             <ImageButton
-              link="https://www.microsoft.com/en-US/Download/confirmation.aspx?id=10019"
+              link="https://www.microsoft.com/en-us/download/details.aspx?id=10019"
               size="medium"
             >
               <VbLogo className="w-20" />
@@ -141,12 +141,21 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
             {t('subtitle.installationGuide')}
           </Typography>
           <ol className="ml-[16px] text-primary-950 dark:text-primary-50">
-            {[1, 2, 3, 4, 5].map((_, i) => (
-              <Typography key={i} component="li" variant="body2-r" type="1">
-                Faucibus lectus suspendisse ornare amet venenatis cursus
-                habitant cursus aliquet.
-              </Typography>
-            ))}
+            <Typography component="li" variant="body2-r" type="1">
+              Descarga el Cliente de MuMichi en alguna de las opciones.
+            </Typography>
+            <Typography component="li" variant="body2-r" type="1">
+              Descomprime el cliente en un lugar seguro.
+            </Typography>
+            <Typography component="li" variant="body2-r" type="1">
+              Crea tu cuenta en el panel de Registration.
+            </Typography>
+            <Typography component="li" variant="body2-r" type="1">
+              Ejecuta LauncherMuMichi.exe para configurar las opciones del juego (Sale un error de red ya que no tenemos actualizacion de cliente por internet) o directamente main.exe para iniciar el juego.
+            </Typography>
+            <Typography component="li" variant="body2-r" type="1">
+              ¡Entra al servidor y comienza tu aventura!
+            </Typography>
           </ol>
         </div>
         <div className="flex flex-col gap-4">

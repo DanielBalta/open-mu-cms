@@ -37,13 +37,13 @@ const AboutPage: React.FC<AboutPageProps> = () => {
                   />
                   <List.Item
                     label={t('serverSettings.experience')}
-                    value="1000x"
+                    value="10x"
                   />
                   <List.Item
                     label={t('serverSettings.masterExperience')}
-                    value="50x"
+                    value="10x"
                   />
-                  <List.Item label={t('serverSettings.drops')} value="50%" />
+                  <List.Item label={t('serverSettings.drops')} value="1%" />
                   <List.Item
                     label={t('serverSettings.pointsPerLevel')}
                     value="5/7"
@@ -75,7 +75,7 @@ const AboutPage: React.FC<AboutPageProps> = () => {
                   <List.Item label={t('resetSystem.level')} value="400" />
                   <List.Item
                     label={t('resetSystem.postResetLevel')}
-                    value="10"
+                    value="1"
                   />
                   <List.Item label="Zen" value="1" />
                 </List>

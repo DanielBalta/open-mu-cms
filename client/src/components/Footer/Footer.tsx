@@ -2,12 +2,10 @@ import React from 'react';
 
 import { FaGithub } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-
 import Typography from '../Typography/Typography';
-import YoutubeIcon from './FooterIcons/YoutubeIcon';
 import DiscordIcon from './FooterIcons/DiscordIcon';
 import FacebookIcon from './FooterIcons/FacebookIcon';
-import InstagramIcon from './FooterIcons/InstagramIcon';
+import ImageButton from "@/components/ImageButton/ImageButton.tsx";
 
 type FooterProps = Record<string, never>;
 
@@ -37,16 +35,14 @@ const Footer: React.FC<FooterProps> = () => {
         </div>
         <div className="flex place-items-center gap-6">
           <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-            <DiscordIcon />
+            <ImageButton link="https://discord.com/channels/1475582393082450000/1475582393971900529">
+              <DiscordIcon />
+            </ImageButton>
           </div>
           <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-            <YoutubeIcon />
-          </div>
-          <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-            <FacebookIcon />
-          </div>
-          <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-            <InstagramIcon />
+            <ImageButton link="https://www.facebook.com/profile.php?id=61582192319397">
+              <FacebookIcon />
+            </ImageButton>
           </div>
         </div>
       </footer>
