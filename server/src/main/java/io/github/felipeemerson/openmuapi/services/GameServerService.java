@@ -50,17 +50,21 @@ public class GameServerService {
     @Value("${admin.panel.password}")
     private String adminPanelPassword;
 
+    private final RestTemplate restTemplate;
+
     public GameServerService(@Autowired GameServerDefinitionRepository serverDefinitionRepository,
                              @Autowired GameServerEndpointRepository endpointRepository,
                              @Autowired GameConfigurationRepository gameConfigurationRepository,
                              @Autowired AccountService accountService,
-                             @Autowired CharacterService characterService) {
+                             @Autowired CharacterService characterService,
+                             @Autowired RestTemplate restTemplate) {
 
         this.serverDefinitionRepository = serverDefinitionRepository;
         this.endpointRepository = endpointRepository;
         this.gameConfigurationRepository = gameConfigurationRepository;
         this.accountService = accountService;
         this.characterService = characterService;
+        this.restTemplate = restTemplate;
     }
 
     @PostConstruct
@@ -93,7 +97,6 @@ public class GameServerService {
     }
 
     public OnlinePlayersDTO getOnlinePlayers() throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
         String url = SystemConstants.ADMIN_PANEL_URL + SystemConstants.ONLINE_PLAYERS_ENDPOINT;
         ResponseEntity<String> response = restTemplate.exchange(
                 url,
@@ -106,19 +109,18 @@ public class GameServerService {
         }
 
         try {
+            log.info("Response received from admin panel: {}, url: {}, headers: {}", response.getBody(), url, adminApiClient);
             String body = response.getBody();
             if (body == null || body.isEmpty()) return new OnlinePlayersDTO();
-
             return new Gson().fromJson(body, OnlinePlayersDTO.class);
         } catch (JsonSyntaxException e) {
             // Aquí manejas si el body no era un JSON válido
-            log.error("Error de formato en la respuesta: {}, url: {}, headers: {}", response.getBody(), url, adminApiClient, e);
+            log.error("Error de formato en la respuesta: {}, url: {}, headers: {}", response.getBody(), url, adminApiClient);
             return new OnlinePlayersDTO();
         }
     }
 
     public boolean isAccountOnline(String loginName) throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(
                 String.format("%s%s/%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.IS_ACCOUNT_ONLINE_ENDPOINT, loginName),
                 HttpMethod.GET,
@@ -150,7 +152,6 @@ public class GameServerService {
             throw new BadRequestException("Server id invalid.");
         }
 
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(
                 String.format("%s%s/%s?msg=%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.SEND_MESSAGE_ENDPOINT, serverId, message),
                 HttpMethod.GET,
@@ -170,4 +171,5 @@ public class GameServerService {
 
         return serverStatisticsDTO;
     }
+
  }
