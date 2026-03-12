@@ -9,6 +9,11 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.apache.hc.client5.http.impl.DefaultRedirectStrategy;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.ProtocolException;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +33,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
@@ -88,11 +95,26 @@ public class SecurityConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        CloseableHttpClient httpClient = HttpClients.custom().setRedirectStrategy(DefaultRedirectStrategy.INSTANCE)
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setRedirectStrategy(new DefaultRedirectStrategy() {
+                    @Override
+                    public URI getLocationURI(HttpRequest request, HttpResponse response, org.apache.hc.core5.http.protocol.HttpContext context) throws HttpException {
+                        URI uri = super.getLocationURI(request, response, context);
+
+                        // Si la redirección apunta a HTTPS, la forzamos a HTTP
+                        if ("https".equalsIgnoreCase(uri.getScheme())) {
+                            try {
+                                return new URIBuilder(uri).setScheme("http").build();
+                            } catch (URISyntaxException e) {
+                                throw new ProtocolException("Error al forzar HTTP en la redirección", e);
+                            }
+                        }
+                        return uri;
+                    }
+                })
                 .build();
-        HttpComponentsClientHttpRequestFactory factory =
-                new HttpComponentsClientHttpRequestFactory(httpClient);
-        factory.setConnectTimeout(5000);
+
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
         return new RestTemplate(factory);
     }
 
