@@ -35,10 +35,6 @@ const Footer: React.FC<FooterProps> = () => {
         </div>
         <div className="flex place-items-center gap-6">
           <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-          </div>
-          <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-          </div>
-          <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
             <ImageButton link="https://discord.com/channels/1475582393082450000/1475582393971900529">
               <DiscordIcon />
             </ImageButton>
