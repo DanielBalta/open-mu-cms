@@ -1,6 +1,7 @@
 package io.github.felipeemerson.openmuapi.services;
 
 import com.nimbusds.jose.shaded.gson.Gson;
+import com.nimbusds.jose.shaded.gson.JsonSyntaxException;
 import io.github.felipeemerson.openmuapi.configuration.SystemConstants;
 import io.github.felipeemerson.openmuapi.dto.CharacterRankDTO;
 import io.github.felipeemerson.openmuapi.dto.GameServerInfoDTO;
@@ -19,6 +20,7 @@ import io.github.felipeemerson.openmuapi.repositories.GameServerDefinitionReposi
 import io.github.felipeemerson.openmuapi.repositories.GameServerEndpointRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -30,8 +32,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.Thread.sleep;
-
+@Slf4j
 @Service
 @Transactional
 public class GameServerService {
@@ -103,7 +104,16 @@ public class GameServerService {
             throw new BadGatewayException();
         }
 
-        return new Gson().fromJson(response.getBody(), OnlinePlayersDTO.class);
+        try {
+            String body = response.getBody();
+            if (body == null || body.isEmpty()) return new OnlinePlayersDTO();
+
+            return new Gson().fromJson(body, OnlinePlayersDTO.class);
+        } catch (JsonSyntaxException e) {
+            // Aquí manejas si el body no era un JSON válido
+            log.error("Error de formato en la respuesta: {}", response.getBody(), e);
+            return new OnlinePlayersDTO();
+        }
     }
 
     public boolean isAccountOnline(String loginName) throws BadGatewayException {
@@ -118,7 +128,8 @@ public class GameServerService {
             throw new BadGatewayException();
         }
 
-        return Boolean.parseBoolean(response.getBody());
+        String body = response.getBody();
+        return Boolean.parseBoolean(body);
     }
 
     public List<CharacterRankDTO> getOnlinePlayersDetailed() throws BadGatewayException {

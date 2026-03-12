@@ -21,14 +21,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.SerializationUtils;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.Thread.sleep;
 
 @Service
 public class CharacterService {
@@ -110,7 +107,17 @@ public class CharacterService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        String[] onlines = gameServerService.getOnlinePlayers().getPlayersList();
+        String[] onlines;
+        try {
+            onlines = gameServerService.getOnlinePlayers().getPlayersList();
+            if (onlines == null) {
+                onlines = new String[0];
+            }
+        } catch (Exception e) {
+            onlines = new String[0];
+        }
+
+        final String[] finalOnlines = onlines;
 
         Page<CharacterRankDTO> pageResult = characterRepository.findCharactersRanked(
                 SystemConstants.RESETS_DEFINITION_ID,
@@ -121,7 +128,7 @@ public class CharacterService {
         );
 
         pageResult.map(character -> {
-            character.setOnline(Arrays.stream(onlines).anyMatch(name -> name.equals(character.getCharacterName())));
+            character.setOnline(Arrays.stream(finalOnlines).anyMatch(name -> name.equals(character.getCharacterName())));
             return character;
         });
 
