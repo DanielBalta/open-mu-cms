@@ -109,7 +109,6 @@ public class GameServerService {
         }
 
         try {
-            log.info("Response received from admin panel: {}, url: {}, headers: {}", response.getBody(), url, adminApiClient);
             String body = response.getBody();
             if (body == null || body.isEmpty()) return new OnlinePlayersDTO();
             return new Gson().fromJson(body, OnlinePlayersDTO.class);
