@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import Typography from '../Typography/Typography';
 import DiscordIcon from './FooterIcons/DiscordIcon';
 import FacebookIcon from './FooterIcons/FacebookIcon';
-import ImageButton from "@/components/ImageButton/ImageButton.tsx";
 
 type FooterProps = Record<string, never>;
 
@@ -34,16 +33,20 @@ const Footer: React.FC<FooterProps> = () => {
           </span>
         </div>
         <div className="flex place-items-center gap-6">
-          <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-            <ImageButton link="https://discord.com/channels/1475582393082450000/1475582393971900529">
-              <DiscordIcon />
-            </ImageButton>
-          </div>
-          <div className="h-fit cursor-pointer rounded-md bg-primary-500 p-1.5 text-white hover:bg-primary-600 dark:hover:bg-primary-400">
-            <ImageButton link="https://www.facebook.com/profile.php?id=61582192319397">
-              <FacebookIcon />
-            </ImageButton>
-          </div>
+          <a
+            href="https://discord.com/channels/1475582393082450000/1475582393971900529"
+            target="_blank"
+            className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-primary-500 text-white hover:bg-primary-600 dark:hover:bg-primary-400 sm:h-14 sm:w-14"
+          >
+            <DiscordIcon />
+          </a>
+          <a
+            href="https://www.facebook.com/profile.php?id=61582192319397"
+            target="_blank"
+            className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-primary-500 text-white hover:bg-primary-600 dark:hover:bg-primary-400 sm:h-14 sm:w-14"
+          >
+            <FacebookIcon />
+          </a>
         </div>
       </footer>
     </>

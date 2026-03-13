@@ -1,20 +1,27 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import List from '@/components/List/List';
 import EventCountdown from './EventCountdown';
 
 type EventCardProps = Record<string, never>;
 
 const EventCard: React.FC<EventCardProps> = () => {
-  const { t } = useTranslation();
   return (
     <>
       <div className="grid w-full items-center rounded-lg border border-primary-200 bg-primary-50 px-12 py-14 dark:border-primary-900 dark:bg-primary-800/20">
         <List>
-          <List.Item label="Blood Castle" value={t('home.eventCard.soon')} />
-          <List.Item label="Devil Square" value={t('home.eventCard.soon')} />
+          <EventCountdown
+              label="Blood Castle"
+              openDurationMinutes={5}
+              startHour="00:00"
+              intervalHours={2}
+          />
+          <EventCountdown
+              label="Devil Square"
+              openDurationMinutes={10}
+              startHour="00:00"
+              intervalHours={4}
+          />
           <EventCountdown
             label="Chaos Castle"
             intervalHours={1}
