@@ -25,9 +25,9 @@ const ServerCard: React.FC<ServerCardProps> = () => {
         ) : (
           <List>
             <List.Item label={t('version')} value="Season 6 Ep. 3" />
-            <List.Item label={t('experience')} value="1000x" />
-            <List.Item label={t('masterExperience')} value="50x" />
-            <List.Item label={t('drops')} value="50%" />
+            <List.Item label={t('experience')} value="10x" />
+            <List.Item label={t('masterExperience')} value="10x" />
+            <List.Item label={t('drops')} value="1%" />
             <List.Item label={t('accounts')} value={statisticsData?.accounts} />
             <List.Item label={t('guilds')} value={statisticsData?.guilds} />
             <List.Item

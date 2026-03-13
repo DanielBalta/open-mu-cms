@@ -12,7 +12,6 @@ import io.github.felipeemerson.openmuapi.entities.GameConfiguration;
 import io.github.felipeemerson.openmuapi.entities.GameServerDefinition;
 import io.github.felipeemerson.openmuapi.entities.GameServerEndpoint;
 import io.github.felipeemerson.openmuapi.enums.AccountState;
-import io.github.felipeemerson.openmuapi.exceptions.BadGatewayException;
 import io.github.felipeemerson.openmuapi.exceptions.BadRequestException;
 import io.github.felipeemerson.openmuapi.exceptions.ForbiddenException;
 import io.github.felipeemerson.openmuapi.repositories.GameConfigurationRepository;
@@ -25,10 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,49 +97,76 @@ public class GameServerService {
         return gameConfigurationRepository.findFirstBy();
     }
 
-    public OnlinePlayersDTO getOnlinePlayers() throws BadGatewayException {
+    public OnlinePlayersDTO getOnlinePlayers() {
         String url = SystemConstants.ADMIN_PANEL_URL + SystemConstants.ONLINE_PLAYERS_ENDPOINT;
-        ResponseEntity<String> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                adminApiClient,
-                String.class);
+        ResponseEntity<String> response;
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    adminApiClient,
+                    String.class);
+        } catch (RestClientException e) {
+            log.error("Error calling admin panel for online players at URL: {}", url, e);
+            return new OnlinePlayersDTO();
+        }
 
-        if (response.getStatusCode().isError()) {
-            throw new BadGatewayException();
+        if (response == null || response.getStatusCode().isError()) {
+            log.error("Admin panel returned an error status or null response for online players. Status: {}, Body: {}",
+                    response != null ? response.getStatusCode() : "null", response != null ? response.getBody() : "null");
+            return new OnlinePlayersDTO();
         }
 
         try {
             String body = response.getBody();
-            if (body == null || body.isEmpty()) return new OnlinePlayersDTO();
+            if (body == null || body.isEmpty()) {
+                log.warn("Admin panel returned an empty or null body for online players at URL: {}", url);
+                return new OnlinePlayersDTO();
+            }
             return new Gson().fromJson(body, OnlinePlayersDTO.class);
         } catch (JsonSyntaxException e) {
-            // Aquí manejas si el body no era un JSON válido
-            log.error("Error de formato en la respuesta: {}, url: {}, headers: {}", response.getBody(), url, adminApiClient);
+            log.error("Error parsing JSON response from admin panel for online players. Body: {}, URL: {}", response.getBody(), url, e);
             return new OnlinePlayersDTO();
         }
     }
 
-    public boolean isAccountOnline(String loginName) throws BadGatewayException {
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format("%s%s/%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.IS_ACCOUNT_ONLINE_ENDPOINT, loginName),
-                HttpMethod.GET,
-                adminApiClient,
-                String.class);
+    public boolean isAccountOnline(String loginName) {
+        String url = String.format("%s%s/%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.IS_ACCOUNT_ONLINE_ENDPOINT, loginName);
+        ResponseEntity<String> response;
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    adminApiClient,
+                    String.class);
+        } catch (RestClientException e) {
+            log.error("Error calling admin panel to check if account {} is online at URL: {}", loginName, url, e);
+            return false;
+        }
 
-        if (response.getStatusCode().isError()) {
-            throw new BadGatewayException();
+        if (response == null || response.getStatusCode().isError()) {
+            log.error("Admin panel returned an error status or null response for account online status. Account: {}, Status: {}, Body: {}",
+                    loginName, response != null ? response.getStatusCode() : "null", response != null ? response.getBody() : "null");
+            return false;
         }
 
         String body = response.getBody();
+        if (body == null || body.isEmpty()) {
+            log.warn("Admin panel returned an empty or null body for account online status. Account: {}, URL: {}", loginName, url);
+            return false;
+        }
         return Boolean.parseBoolean(body);
     }
 
-    public List<CharacterRankDTO> getOnlinePlayersDetailed() throws BadGatewayException {
-        return this.characterService.getPlayersByName(Arrays.asList(this.getOnlinePlayers().getPlayersList()));
+    public List<CharacterRankDTO> getOnlinePlayersDetailed() {
+        OnlinePlayersDTO onlinePlayers = this.getOnlinePlayers();
+        if (onlinePlayers == null || onlinePlayers.getPlayersList() == null) {
+            return Collections.emptyList();
+        }
+        return this.characterService.getPlayersByName(Arrays.asList(onlinePlayers.getPlayersList()));
     }
 
-    public void sendServerMessage(String message, int serverId, String loginName) throws BadGatewayException {
+    public void sendServerMessage(String message, int serverId, String loginName) {
         Account account = this.accountService.getAccountByLoginName(loginName);
 
         if (!account.getState().equals(AccountState.GAME_MASTER)) {
@@ -151,22 +179,32 @@ public class GameServerService {
             throw new BadRequestException("Server id invalid.");
         }
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format("%s%s/%s?msg=%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.SEND_MESSAGE_ENDPOINT, serverId, message),
-                HttpMethod.GET,
-                adminApiClient,
-                String.class
-        );
+        String url = String.format("%s%s/%s?msg=%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.SEND_MESSAGE_ENDPOINT, serverId, message);
+        ResponseEntity<String> response;
+        try {
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    adminApiClient,
+                    String.class
+            );
+        } catch (RestClientException e) {
+            log.error("Error calling admin panel to send message '{}' to server {} for account {} at URL: {}", message, serverId, loginName, url, e);
+            return;
+        }
 
-        if (response.getStatusCode().isError()){
-            throw new BadGatewayException();
+
+        if (response == null || response.getStatusCode().isError()){
+            log.error("Admin panel returned an error status or null response when sending message. Message: '{}', ServerId: {}, Account: {}, Status: {}, Body: {}",
+                    message, serverId, loginName, response != null ? response.getStatusCode() : "null", response != null ? response.getBody() : "null");
         }
     }
 
     public ServerStatisticsDTO getStatistics() {
         ServerStatisticsDTO serverStatisticsDTO = this.gameConfigurationRepository.getStatistics();
 
-        serverStatisticsDTO.setOnlines(this.getOnlinePlayers().getPlayers());
+        OnlinePlayersDTO onlinePlayers = this.getOnlinePlayers();
+        serverStatisticsDTO.setOnlines(onlinePlayers != null ? onlinePlayers.getPlayers() : 0);
 
         return serverStatisticsDTO;
     }

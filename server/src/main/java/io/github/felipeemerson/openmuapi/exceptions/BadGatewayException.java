@@ -6,4 +6,12 @@ public class BadGatewayException extends RuntimeException {
         super();
     }
 
+    public BadGatewayException(String message) {
+        super(message);
+    }
+
+    public BadGatewayException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
